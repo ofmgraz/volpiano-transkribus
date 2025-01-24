@@ -7,23 +7,6 @@ NS_MAP = {"p": P_NS}
 
 INFILE = "D-MbsClm2766_Seite_010.xml"
 
-# l-2 # 0
-# z-2 # 1
-# l-1 # 2
-# z-1 # 3
-# l1  # 4
-# z1  # 5
-# l2  # 6
-# z2  # 7
-# l3  # 8
-# z3  # 9
-# l4  # 10
-# z4  # 11
-# l5  # 12
-# z5  # 13
-# l6  # 14
-# z6  # 15
-
 # # c4 z1, z2 , z2
 # f(c4, 10) => 9
 # f(c4, 5) => 4
@@ -44,24 +27,46 @@ INFILE = "D-MbsClm2766_Seite_010.xml"
 # f(c1, 10) => 8
 # f(c1, 11) => 9
 
-# a 0
-# b 1
-# c 2
-# d 3
-# e 4
-# f 5
-# g 6
-# h 7
-# j 8
-# k 9
-# l 10
-# m 11
-# n 12
-# o 13
-# p 14
-# q 15
-# r 16
-# s 17
+VOLP2NUM = {
+    "a": 0,
+    "b": 1,
+    "c": 2,
+    "d": 3,
+    "e": 4,
+    "f": 5,
+    "g": 6,
+    "h": 7,
+    "j": 8,
+    "k": 9,
+    "l": 10,
+    "m": 11,
+    "n": 12,
+    "o": 13,
+    "p": 14,
+    "q": 15,
+    "r": 16,
+    "s": 17,
+}
+NUM2VOLP = {v: k for k, v in VOLP2NUM.items()}
+
+TOKEN2NUM = {
+    "l-2": 0,
+    "z-2": 1,
+    "l-1": 2,
+    "z-1": 3,
+    "l1": 4,
+    "z1": 5,
+    "l2": 6,
+    "z2": 7,
+    "l3": 8,
+    "z3": 9,
+    "l4": 10,
+    "z4": 11,
+    "l5": 12,
+    "z5": 13,
+    "l6": 14,
+    "z6": 15,
+}
 
 
 # str -> str
@@ -77,9 +82,11 @@ def is_note_token(token_str):
 # (str, str) -> str
 def token2volp(clef, token_str):
     if is_note_token(token_str):
-        return "a"
+        return NUM2VOLP[TOKEN2NUM[token_str] + 3]
     elif token_str == ",":
         return "-"
+    elif token_str == "L":
+        return "-3-"
     else:
         return token_str
 
@@ -90,12 +97,13 @@ def volp(notation_str):
     # first token is clef
     # for remaining tokens:
     #  map from input numeric values to output numeric values by clef offset
+    notation_str = re.sub(r"(l|z)(-2|-1|[1-6]),", r"\1\2 ,", notation_str) # XXX
     tokens = notation_str.split(" ")
     clef_str = tokens[0]
     remaining = tokens[1:]
     clef = determine_clef(clef_str)
     transformed = [token2volp(clef, token) for token in remaining]
-    return "".join(["1", *transformed])
+    return "".join(["1-", *transformed])
 
 
 def main():
