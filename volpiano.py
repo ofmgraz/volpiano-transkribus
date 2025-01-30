@@ -88,7 +88,7 @@ def token2volp(clef, token_str):
     elif token_str == "L":
         return "-3-"
     else:
-        return token_str
+        return "-2-"
 
 
 # str -> str
