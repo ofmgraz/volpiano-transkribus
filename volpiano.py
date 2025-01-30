@@ -1,3 +1,5 @@
+# import argparse
+import json
 import re
 
 from lxml import etree
@@ -6,6 +8,7 @@ P_NS = "http://schema.primaresearch.org/PAGE/gts/pagecontent/2013-07-15"
 NS_MAP = {"p": P_NS}
 
 INFILE = "D-MbsClm2766_Seite_010.xml"
+OUTFILE = "D-MbsClm2766_Seite_010.json"
 
 # # c4 z1, z2 , z2
 # f(c4, 10) => 9
@@ -69,6 +72,11 @@ TOKEN2NUM = {
 }
 
 
+# CLEFS = {
+#     "c2": 3,
+# }
+
+
 # str -> str
 def determine_clef(clef_str):
     return clef_str
@@ -125,7 +133,8 @@ def main():
         )
     }
     volpiano_notations = {k: volp(v) for k, v in notations.items()}
-    print(volpiano_notations)
+    with open(OUTFILE, "w", encoding="utf-8") as f:
+        json.dump(volpiano_notations, f, indent=2)
 
 
 if __name__ == "__main__":
