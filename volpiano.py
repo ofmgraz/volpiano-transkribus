@@ -114,10 +114,10 @@ def token2volp(clef, token_str):
     elif token_str.startswith("cu_"): # Kustos, in Transkribus: "cu_z2" => 'kleine Note' in Volpiano Großbuchstaben, davor 2 Abstände (lt. RK) (volp: "--A")
         cu_token_str = token_str.lstrip("cu_") 
         return "--" + NUM2VOLP[TOKEN2NUM[cu_token_str] + CLEFS[clef]].upper()
-    elif token_str.startswith("b"): # b-Vorzeichen in Transkribus: "bz3"
+    elif token_str.startswith("b"): # b-Vorzeichen in Transkribus: "bz3" (oder "b_z3"?!)
         b_token_str = token_str.lstrip("b") 
         return VOLP2BVOLP[NUM2VOLP[TOKEN2NUM[b_token_str] + CLEFS[clef]]]
-    elif token_str.startswith("n"): #Auflösungszeichen: Großbuchstaben von b-Vorzeichen in Volpiano
+    elif token_str.startswith("n"): #Auflösungszeichen: Großbuchstaben von b-Vorzeichen in Volpiano (oder "n_"?!)
         n_token_str = token_str.lstrip("n")
         return VOLP2BVOLP[NUM2VOLP[TOKEN2NUM[n_token_str] + CLEFS[clef]]].upper()
     else:
@@ -135,7 +135,15 @@ def volp(notation_str):
     clef_str = tokens[0]
     remaining = tokens[1:]
     clef = determine_clef(clef_str)
-    transformed = [token2volp(clef, token) for token in remaining]
+    clef2_index = next((i for i, token in enumerate(remaining) if re.match(r"\[(c|f)\d\]", token)), None)
+    if clef2_index is not None:
+        remaining1 = remaining[:clef2_index]
+        clef_str2 = remaining[clef2_index]
+        remaining2 = remaining[clef2_index + 1:]
+        clef2 = determine_clef(clef_str2)
+        transformed = [token2volp(clef, token) for token in remaining1] + ["-"] + [token2volp(clef2, token) for token in remaining2]
+    else:
+        transformed = [token2volp(clef, token) for token in remaining]
     return "".join(["1-", *transformed])
 
 

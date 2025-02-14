@@ -24,3 +24,6 @@ def test_excel_example():
 def test_b2volp(): 
     assert volp("c4 l3 , l3 bz3 , z2 cu_z2") == "1-h-hi-g--G"
     assert volp("c4 l3 , l3 bz3 nz3 , z2 cu_z2") == "1-h-hiI-g--G"
+
+def test_2clefs():
+    assert volp("c4 l3 , [c2] z3 l3") == "1-h--nm"
