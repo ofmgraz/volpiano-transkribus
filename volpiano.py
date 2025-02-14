@@ -1,5 +1,4 @@
 # import argparse
-import json
 import re
 
 from lxml import etree
@@ -56,42 +55,37 @@ TOKEN2NUM = {
 # f(c3, 8) => 9   == +1
 # f(c4, 10) => 9  == -1
 
-# f(f1, 4) => 5   == +1 
+# f(f1, 4) => 5   == +1
 # f(f2, 6) => 5   == -1
 # f(f3, 8) => 5	  == -3
 # f(f4, 10) => 5  == -5
 
 CLEFS = {
-     "c1": 5,
-     "c2": 3,
-     "c3": 1, 
-     "c4": -1, 
-     "f1": 1, 
-     "f2": -1,
-     "f3": -3,
-     "f4": -5
- }
-
-# b-Vorzeichen: Ton (=Ton in Volpiano) : b-Vorzeichen in Volpiano
-# B (=b): y 
-# es‘(=e): w 
-# b‘(=j): i 
-# es‘‘(=m): x 
-# b‘‘(=q): z
-
-VOLP2BVOLP = {
-    "b": "y",
-    "e": "w",
-    "j": "i", 
-    "m": "x", 
-    "q": "z"
+    "c1": 5,
+    "c2": 3,
+    "c3": 1,
+    "c4": -1,
+    "f1": 1,
+    "f2": -1,
+    "f3": -3,
+    "f4": -5,
 }
 
+# b-Vorzeichen: Ton (=Ton in Volpiano) : b-Vorzeichen in Volpiano
+# B (=b): y
+# es‘(=e): w
+# b‘(=j): i
+# es‘‘(=m): x
+# b‘‘(=q): z
+
+VOLP2BVOLP = {"b": "y", "e": "w", "j": "i", "m": "x", "q": "z"}
 
 
 # str -> str
 def determine_clef(clef_str):
-    if re.search(r"[/\[]", clef_str): #zusammengesetzter clef "c4/f2" oder "[c4]"
+    if re.search(
+        r"[/\[]", clef_str
+    ):  # zusammengesetzter clef "c4/f2" oder "[c4]"
         clef_str = re.search(r"(c\d+|f\d+)", clef_str).group(0)
         return clef_str
     else:
@@ -106,20 +100,28 @@ def is_note_token(token_str):
 # (str, str) -> str
 def token2volp(clef, token_str):
     if is_note_token(token_str):
-        return NUM2VOLP[TOKEN2NUM[token_str] + CLEFS[clef]] 
+        return NUM2VOLP[TOKEN2NUM[token_str] + CLEFS[clef]]
     elif token_str == ",":
         return "-"
     elif token_str == "L":
         return "-3-"
-    elif token_str.startswith("cu_"): # Kustos, in Transkribus: "cu_z2" => 'kleine Note' in Volpiano Großbuchstaben, davor 2 Abstände (lt. RK) (volp: "--A")
-        cu_token_str = token_str.lstrip("cu_") 
+    elif token_str.startswith(
+        "cu_"
+    ):  # Kustos, in Transkribus: "cu_z2" => 'kleine Note' in Volpiano Großbuchstaben, davor 2 Abstände (lt. RK) (volp: "--A")
+        cu_token_str = token_str.lstrip("cu_")
         return "--" + NUM2VOLP[TOKEN2NUM[cu_token_str] + CLEFS[clef]].upper()
-    elif token_str.startswith("b"): # b-Vorzeichen in Transkribus: "bz3" (oder "b_z3"?!)
-        b_token_str = token_str.lstrip("b") 
+    elif token_str.startswith(
+        "b"
+    ):  # b-Vorzeichen in Transkribus: "bz3" (oder "b_z3"?!)
+        b_token_str = token_str.lstrip("b")
         return VOLP2BVOLP[NUM2VOLP[TOKEN2NUM[b_token_str] + CLEFS[clef]]]
-    elif token_str.startswith("n"): #Auflösungszeichen: Großbuchstaben von b-Vorzeichen in Volpiano (oder "n_"?!)
+    elif token_str.startswith(
+        "n"
+    ):  # Auflösungszeichen: Großbuchstaben von b-Vorzeichen in Volpiano (oder "n_"?!)
         n_token_str = token_str.lstrip("n")
-        return VOLP2BVOLP[NUM2VOLP[TOKEN2NUM[n_token_str] + CLEFS[clef]]].upper()
+        return VOLP2BVOLP[
+            NUM2VOLP[TOKEN2NUM[n_token_str] + CLEFS[clef]]
+        ].upper()
     else:
         return "-2-"
 
@@ -130,44 +132,112 @@ def volp(notation_str):
     # first token is clef
     # for remaining tokens:
     #  map from input numeric values to output numeric values by clef offset
-    notation_str = re.sub(r"(l|z)(-2|-1|[1-6]),", r"\1\2 ,", notation_str) # XXX
+    notation_str = re.sub(
+        r"(l|z)(-2|-1|[1-6]),", r"\1\2 ,", notation_str
+    )  # XXX
     tokens = notation_str.split(" ")
     clef_str = tokens[0]
     remaining = tokens[1:]
     clef = determine_clef(clef_str)
-    clef2_index = next((i for i, token in enumerate(remaining) if re.match(r"\[(c|f)\d\]", token)), None)
+    clef2_index = next(
+        (
+            i
+            for i, token in enumerate(remaining)
+            if re.match(r"\[(c|f)\d\]", token)
+        ),
+        None,
+    )
     if clef2_index is not None:
         remaining1 = remaining[:clef2_index]
         clef_str2 = remaining[clef2_index]
-        remaining2 = remaining[clef2_index + 1:]
+        remaining2 = remaining[clef2_index + 1 :]
         clef2 = determine_clef(clef_str2)
-        transformed = [token2volp(clef, token) for token in remaining1] + ["-"] + [token2volp(clef2, token) for token in remaining2]
+        transformed = (
+            [token2volp(clef, token) for token in remaining1]
+            + ["-"]
+            + [token2volp(clef2, token) for token in remaining2]
+        )
     else:
         transformed = [token2volp(clef, token) for token in remaining]
     return "".join(["1-", *transformed])
 
 
-def main():
-    tree = etree.parse(INFILE)
+# s -> [(int, int), (int, int), (int, int), (int, int)]
+# 646,154 839,154 839,238 646,238
+def get_coords(coords_str):
+    pairs = coords_str.split()
+    return [tuple(int(x) for x in pair.split(",")) for pair in pairs]
+
+
+# (str, str) -> str
+def make_cropped_image(imagepath, coords):
+    # width = 0
+    # height = 0
+    # top = 0
+    # bottom = 0
+    # left = 0
+    # right = 0
+    return """<div style="width: 411px; height: 154px; overflow: hidden;">
+<img title="{region_id}" style="object-position: top left; object-fit: none; margin-top: -147px; margin-bottom: -1810px; margin-left: -836px; margin-right: -253px;" src="images/D-MbsClm2766_Seite_010.jpg"></img>
+</div>"""
+
+
+def create_html_output(tree):
+    html = """<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8"/>
+    <title>VOLPIANO</title>
+    <style>
+.volpiano {
+  font-family: Volpiano;
+  font-size: 4rem;
+}
+    </style>
+  </head>
+  <body>
+    <h1>Name der Datei bzw. Seite</h1>
+    <table>
+"""
     notations = {
         region.get("id"): (
-            t.text
-            if (
-                t := region.find(
-                    "p:TextLine/p:TextEquiv/p:Unicode", namespaces=NS_MAP
-                )
-            )
-            is not None
-            else None
+            {
+                "coords": region.find("p:Coords", namespaces=NS_MAP).get(
+                    "points"
+                ),
+                "notation": (
+                    t.text
+                    if (
+                        t := region.find(
+                            "p:TextLine/p:TextEquiv/p:Unicode",
+                            namespaces=NS_MAP,
+                        )
+                    )
+                    is not None
+                    else None
+                ),
+            }
         )
         for region in tree.xpath(
             "//p:TextRegion[contains(@custom, 'type:notation')]",
             namespaces=NS_MAP,
         )
     }
-    volpiano_notations = {k: volp(v) for k, v in notations.items()}
-    with open(OUTFILE, "w", encoding="utf-8") as f:
-        json.dump(volpiano_notations, f, indent=2)
+    for region_id, data in notations.items():
+        html += f"""<tr>
+<td>{make_cropped_image("images/D-MbsClm2766_Seite_010.jpg", get_coords(data["coords"]))}</td>
+<td><span class="volpiano">{volp(data["notation"])}</span></td>
+</tr>"""
+    html += """</table>
+  </body>
+</html>"""
+    return html
+
+
+def main():
+    tree = etree.parse(INFILE)
+    html = create_html_output(tree)
+    print(html)
 
 
 if __name__ == "__main__":
