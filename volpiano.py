@@ -112,13 +112,13 @@ def token2volp(clef, token_str):
         return "--" + NUM2VOLP[TOKEN2NUM[cu_token_str] + CLEFS[clef]].upper()
     elif token_str.startswith(
         "b"
-    ):  # b-Vorzeichen in Transkribus: "bz3" (oder "b_z3"?!)
-        b_token_str = token_str.lstrip("b")
+    ):  # b-Vorzeichen in Transkribus: "bz3" 
+        b_token_str = re.sub(r'^b_|^b', '', token_str)
         return VOLP2BVOLP[NUM2VOLP[TOKEN2NUM[b_token_str] + CLEFS[clef]]]
     elif token_str.startswith(
         "n"
-    ):  # Auflösungszeichen: Großbuchstaben von b-Vorzeichen in Volpiano (oder "n_"?!)
-        n_token_str = token_str.lstrip("n")
+    ):  # Auflösungszeichen: Großbuchstaben von b-Vorzeichen in Volpiano
+        n_token_str = re.sub(r'^n_|^n', '', token_str)
         return VOLP2BVOLP[
             NUM2VOLP[TOKEN2NUM[n_token_str] + CLEFS[clef]]
         ].upper()
@@ -163,22 +163,25 @@ def volp(notation_str):
 
 
 # s -> [(int, int), (int, int), (int, int), (int, int)]
-# 646,154 839,154 839,238 646,238
+# 836,147 1247,147 1247,301 836,301
 def get_coords(coords_str):
     pairs = coords_str.split()
     return [tuple(int(x) for x in pair.split(",")) for pair in pairs]
 
 
 # (str, str) -> str
-def make_cropped_image(imagepath, coords):
-    # width = 0
-    # height = 0
-    # top = 0
-    # bottom = 0
-    # left = 0
-    # right = 0
-    return """<div style="width: 411px; height: 154px; overflow: hidden;">
-<img title="{region_id}" style="object-position: top left; object-fit: none; margin-top: -147px; margin-bottom: -1810px; margin-left: -836px; margin-right: -253px;" src="images/D-MbsClm2766_Seite_010.jpg"></img>
+def make_cropped_image(imagepath, region_id, coords, ImageHeight, ImageWidth):
+    (x1, y1) = coords[0]
+    (x2, y2) = coords [2]
+    width = x2 - x1
+    height = y2 - y1
+    top = -y1
+    bottom = -(ImageHeight - y2)
+    left = -x1
+    right = -(ImageWidth - x2)
+    #print(width, height, top, bottom, left, right)
+    return f"""<div style="width: {width}px; height: {height}px; overflow: hidden;"> 
+<img title="{region_id}" style="object-position: top left; object-fit: none; margin-top: {top}px; margin-bottom: {bottom}px; margin-left: {left}px; margin-right: {right}px;" src="{imagepath}"></img>
 </div>"""
 
 
@@ -199,6 +202,8 @@ def create_html_output(tree):
     <h1>Name der Datei bzw. Seite</h1>
     <table>
 """
+    ImageHeight = int(tree.find("p:Page", namespaces=NS_MAP).get("imageHeight"))
+    ImageWidth = int(tree.find("p:Page", namespaces=NS_MAP).get("imageWidth"))
     notations = {
         region.get("id"): (
             {
@@ -225,7 +230,7 @@ def create_html_output(tree):
     }
     for region_id, data in notations.items():
         html += f"""<tr>
-<td>{make_cropped_image("images/D-MbsClm2766_Seite_010.jpg", get_coords(data["coords"]))}</td>
+<td>{make_cropped_image("images/D-MbsClm2766_Seite_010.jpg", region_id, get_coords(data["coords"]), ImageHeight, ImageWidth)}</td>
 <td><span class="volpiano">{volp(data["notation"])}</span></td>
 </tr>"""
     html += """</table>
@@ -237,8 +242,11 @@ def create_html_output(tree):
 def main():
     tree = etree.parse(INFILE)
     html = create_html_output(tree)
-    print(html)
+    #print(html)
+    with open('output.html', 'w', encoding='utf-8') as f:
+        f.write(html)
 
 
 if __name__ == "__main__":
     main()
+    
