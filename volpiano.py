@@ -184,6 +184,31 @@ def make_cropped_image(imagepath, region_id, coords, ImageHeight, ImageWidth):
 <img title="{region_id}" style="object-position: top left; object-fit: none; margin-top: {top}px; margin-bottom: {bottom}px; margin-left: {left}px; margin-right: {right}px;" src="{imagepath}"></img>
 </div>"""
 
+def maketype(custom): 
+    # "readingOrder {index:0;} structure {score:0.94; type:rubrik2;}"
+    type = re.search(r"type:([^;]+);", custom).group(1)
+    return type
+
+def cleaned_rubrik_text(text): #rubrik 2 text bereinigen
+    text = " <br> ".join(text)
+    return text
+
+
+def cleaned_text(text): # text bereinigen
+    text = "".join(text)
+    return text
+
+# dic of region ->  
+def process_regions(data):
+    if data["type"] == "notation": 
+        data["text"] = volp(cleaned_text(data["text"]))
+    if data["type"] == "rubrik2": 
+        data["text"] = cleaned_rubrik_text(data["text"])
+    else: 
+        data["text"] = cleaned_text(data["text"])
+        return data
+    return data
+
 
 def create_html_output(tree):
     html = """<!DOCTYPE html>
@@ -196,47 +221,74 @@ def create_html_output(tree):
   font-family: Volpiano;
   font-size: 4rem;
 }
+
+.container-grid {
+    display: grid;                     
+    grid-template-columns: auto 1fr;  
+    gap: 20px;                        
+    height: 100vh;                    
+}
+
+.image-section-grid {
+    position: sticky;  
+    top: 0;           
+    height: 100vh;
+    overflow: hidden;    
+}
+
+.text-section-grid {
+    overflow-y: auto;  
+    padding: 20px;
+    font-size: 3em;
+}
+
+p {
+    margin-bottom: 10px;
+    margin-top: 10px;
+    }
+
+h1 {
+    margin: 20px;
+    font-size: 4em;
+}
     </style>
   </head>
   <body>
     <h1>Name der Datei bzw. Seite</h1>
-    <table>
+    <div class="container-grid">
+        <div class="image-section-grid">
+            <img src="images/D-MbsClm2766_Seite_010.jpg">
+        </div>
+        <div class="text-section-grid">
 """
-    ImageHeight = int(tree.find("p:Page", namespaces=NS_MAP).get("imageHeight"))
-    ImageWidth = int(tree.find("p:Page", namespaces=NS_MAP).get("imageWidth"))
-    notations = {
-        region.get("id"): (
-            {
-                "coords": region.find("p:Coords", namespaces=NS_MAP).get(
-                    "points"
-                ),
-                "notation": (
-                    t.text
-                    if (
-                        t := region.find(
-                            "p:TextLine/p:TextEquiv/p:Unicode",
-                            namespaces=NS_MAP,
-                        )
-                    )
-                    is not None
-                    else None
-                ),
-            }
-        )
-        for region in tree.xpath(
-            "//p:TextRegion[contains(@custom, 'type:notation')]",
-            namespaces=NS_MAP,
-        )
-    }
-    for region_id, data in notations.items():
-        html += f"""<tr>
-<td>{make_cropped_image("images/D-MbsClm2766_Seite_010.jpg", region_id, get_coords(data["coords"]), ImageHeight, ImageWidth)}</td>
-<td><span class="volpiano">{volp(data["notation"])}</span></td>
-</tr>"""
-    html += """</table>
+
+
+    for region in tree.xpath("//p:TextRegion", namespaces=NS_MAP): 
+        region_id = region.get("id")
+        type = maketype(region.get("custom"))
+        text = region.xpath("./p:TextLine/p:TextEquiv/p:Unicode/text()", namespaces=NS_MAP)
+        coords = region.find("./p:Coords", namespaces=NS_MAP).get("points")
+        regions = {region_id: {"type": type, "text": text, "coords": coords}}
+        regions[region_id] = process_regions(regions[region_id])
+        #print(regions)
+        for region_id, data in regions.items(): 
+            text = data["text"]
+            if data["type"] == "notation":
+                html += f"""<p class="volpiano">{text}</p>"""
+            elif data["type"] == "rubrik2": 
+                html += f"""<p style="color:red;">{text}</p>"""
+            elif data["type"] == "rubrik": 
+               html += f"""<p style="color:red;">{text}</p>"""
+            elif data["type"] == "initiale_lombarde" or data["type"] == "initiale_cadelle":
+                html += f"""<p><b>{text}</b></p>"""
+            else:
+                html += f"""<p>{text}</p>"""
+    html += """</div>
+    </div>
   </body>
-</html>"""
+  </html>"""
     return html
+
 
 
 def main():
