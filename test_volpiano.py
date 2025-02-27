@@ -1,4 +1,4 @@
-from volpiano import determine_clef, volp, token2volp, maketype, process_regions, cleaned_text, cleaned_rubrik_text
+from volpiano import determine_clef, volp, token2volp, maketype, process_regions, cleaned_text, cleaned_rubrik_text, change_coords
 
 
 def test_simple():
@@ -47,3 +47,6 @@ def test_process_regions():
     result2 = {'type': 'notation', 'text': '1-e-g-g', 'coords': '646,154 839,154 839,238 646,238'}
     assert process_regions(data) == result
     assert process_regions(data2) == result2
+
+def test_change_coords():
+    assert change_coords('836,147 1247,147 1247,301 836,301') == [836, 147, 411, 154]

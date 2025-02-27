@@ -164,28 +164,19 @@ def volp(notation_str):
 
 # s -> [(int, int), (int, int), (int, int), (int, int)]
 # 836,147 1247,147 1247,301 836,301
-def get_coords(coords_str):
+def change_coords(coords_str):
     pairs = coords_str.split()
-    return [tuple(int(x) for x in pair.split(",")) for pair in pairs]
-
-
-# (str, str) -> str
-def make_cropped_image(imagepath, region_id, coords, ImageHeight, ImageWidth):
+    coords = [tuple(int(x) for x in pair.split(",")) for pair in pairs]
     (x1, y1) = coords[0]
-    (x2, y2) = coords [2]
+    (x2, y2) = coords[2]
+    left = x1
+    top = y1
     width = x2 - x1
     height = y2 - y1
-    top = -y1
-    bottom = -(ImageHeight - y2)
-    left = -x1
-    right = -(ImageWidth - x2)
-    #print(width, height, top, bottom, left, right)
-    return f"""<div style="width: {width}px; height: {height}px; overflow: hidden;"> 
-<img title="{region_id}" style="object-position: top left; object-fit: none; margin-top: {top}px; margin-bottom: {bottom}px; margin-left: {left}px; margin-right: {right}px;" src="{imagepath}"></img>
-</div>"""
+    return [left, top, width, height]
 
 def maketype(custom): 
-    # "readingOrder {index:0;} structure {score:0.94; type:rubrik2;}"
+    # "readingOrder {index:0;} structure {score:0.94; type:rubrik2;}" ==> rubrik2
     type = re.search(r"type:([^;]+);", custom).group(1)
     return type
 
@@ -209,8 +200,20 @@ def process_regions(data):
         return data
     return data
 
+def get_regions(tree):
+    regions = {}
+    for region in tree.xpath("//p:TextRegion", namespaces=NS_MAP): 
+        region_id = region.get("id")
+        type = maketype(region.get("custom"))
+        text = region.xpath("./p:TextLine/p:TextEquiv/p:Unicode/text()", namespaces=NS_MAP)
+        coords = region.find("./p:Coords", namespaces=NS_MAP).get("points")
+        #regions = {region_id: {"type": type, "text": text, "coords": coords}}
+        regions[region_id] = {"type": type, "text": text, "coords": coords}
+        regions[region_id] = process_regions(regions[region_id])
+    return regions
 
 def create_html_output(tree):
+    regions = get_regions(tree)
     html = """<!DOCTYPE html>
 <html>
   <head>
@@ -233,7 +236,8 @@ def create_html_output(tree):
     position: sticky;  
     top: 0;           
     height: 100vh;
-    overflow: hidden;    
+    overflow: hidden;
+    position: relative; 
 }
 
 .text-section-grid {
@@ -245,50 +249,118 @@ def create_html_output(tree):
 p {
     margin-bottom: 10px;
     margin-top: 10px;
-    }
+}
 
 h1 {
     margin: 20px;
     font-size: 4em;
 }
-    </style>
+
+p.highlight {
+  border: 5px solid black;
+  padding: 3px;
+}
+
+.image-region {
+  position: absolute;
+  border: 5px solid transparent;
+  pointer-events: auto;
+  z-index: 10;
+}
+
+.image-region.highlight {
+  border: 5px solid black;
+}
+""" 
+    html += """</style>
   </head>
   <body>
-    <h1>Name der Datei bzw. Seite</h1>
+    <h1>Name der Datei bzw. Seite: D-MbsClm2766_Seite_010</h1>
     <div class="container-grid">
         <div class="image-section-grid">
             <img src="images/D-MbsClm2766_Seite_010.jpg">
+"""
+    
+    # Add image regions based on the coordinates from your data
+    for region_id, data in regions.items():
+        coords = change_coords(data["coords"])
+        html += f"""<div class="image-region" id="region-{region_id}" data-target="paragraph-{region_id}" 
+                    style="left: {coords[0]}px; top: {coords[1]}px; width: {coords[2]}px; height: {coords[3]}px;"></div>"""
+
+    
+    html += """
         </div>
         <div class="text-section-grid">
 """
-
-
-    for region in tree.xpath("//p:TextRegion", namespaces=NS_MAP): 
-        region_id = region.get("id")
-        type = maketype(region.get("custom"))
-        text = region.xpath("./p:TextLine/p:TextEquiv/p:Unicode/text()", namespaces=NS_MAP)
-        coords = region.find("./p:Coords", namespaces=NS_MAP).get("points")
-        regions = {region_id: {"type": type, "text": text, "coords": coords}}
-        regions[region_id] = process_regions(regions[region_id])
-        #print(regions)
-        for region_id, data in regions.items(): 
-            text = data["text"]
-            if data["type"] == "notation":
-                html += f"""<p class="volpiano">{text}</p>"""
-            elif data["type"] == "rubrik2": 
-                html += f"""<p style="color:red;">{text}</p>"""
-            elif data["type"] == "rubrik": 
-               html += f"""<p style="color:red;">{text}</p>"""
-            elif data["type"] == "initiale_lombarde" or data["type"] == "initiale_cadelle":
-                html += f"""<p><b>{text}</b></p>"""
-            else:
-                html += f"""<p>{text}</p>"""
+    for region_id, data in regions.items(): 
+        text = data["text"]
+        # Add id and data-target to ALL paragraph types
+        if data["type"] == "notation":
+            html += f"""<p id="paragraph-{region_id}" data-target="region-{region_id}" data-region="{region_id}" class="volpiano">{text}</p>"""
+        elif data["type"] == "rubrik2": 
+            html += f"""<p id="paragraph-{region_id}" data-target="region-{region_id}" data-region="{region_id}" style="color:red;">{text}</p>"""
+        elif data["type"] == "rubrik": 
+            html += f"""<p id="paragraph-{region_id}" data-target="region-{region_id}" data-region="{region_id}" style="color:red;">{text}</p>"""
+        elif data["type"] == "initiale_lombarde" or data["type"] == "initiale_cadelle":
+            html += f"""<p id="paragraph-{region_id}" data-target="region-{region_id}" data-region="{region_id}"><b>{text}</b></p>"""
+        else:
+            html += f"""<p id="paragraph-{region_id}" data-target="region-{region_id}" class="paragraph">{text}</p>"""
     html += """</div>
     </div>
+    
+    <script>
+      document.addEventListener('DOMContentLoaded', function() {
+        const paragraphs = document.querySelectorAll('p[data-target]');
+        const imageRegions = document.querySelectorAll('.image-region');
+        
+        paragraphs.forEach(paragraph => {
+          paragraph.addEventListener('mouseenter', function() {
+            const targetId = this.getAttribute('data-target');
+            this.classList.add('highlight');
+            
+            const region = document.getElementById(targetId);
+            if (region) {
+              region.classList.add('highlight');
+            }
+          });
+          
+          paragraph.addEventListener('mouseleave', function() {
+            const targetId = this.getAttribute('data-target');
+            this.classList.remove('highlight');
+            
+            const region = document.getElementById(targetId);
+            if (region) {
+              region.classList.remove('highlight');
+            }
+          });
+        });
+        
+        imageRegions.forEach(region => {
+          region.addEventListener('mouseenter', function() {
+            const targetId = this.getAttribute('data-target');
+            this.classList.add('highlight');
+            
+            const paragraph = document.getElementById(targetId);
+            if (paragraph) {
+              paragraph.classList.add('highlight');
+            }
+          });
+          
+          region.addEventListener('mouseleave', function() {
+            const targetId = this.getAttribute('data-target');
+            this.classList.remove('highlight');
+            
+            const paragraph = document.getElementById(targetId);
+            if (paragraph) {
+              paragraph.classList.remove('highlight');
+            }
+          });
+        });
+      });
+    </script>
   </body>
   </html>"""
     return html
-
 
 
 def main():
