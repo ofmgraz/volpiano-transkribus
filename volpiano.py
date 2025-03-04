@@ -3,11 +3,11 @@ import re
 
 from lxml import etree
 
-P_NS = "http://schema.primaresearch.org/PAGE/gts/pagecontent/2013-07-15"
+P_NS = "http://www.tei-c.org/ns/1.0"
 NS_MAP = {"p": P_NS}
 
-INFILE = "D-MbsClm2766_Seite_010.xml"
-OUTFILE = "D-MbsClm2766_Seite_010.json"
+INFILE = "A-Gf_A63_51_Graduale_1517.xml"
+#OUTFILE = "D-MbsClm2766_Seite_010.json"
 
 VOLP2NUM = {
     "a": 0,
@@ -29,6 +29,7 @@ VOLP2NUM = {
     "r": 16,
     "s": 17,
 }
+
 NUM2VOLP = {v: k for k, v in VOLP2NUM.items()}
 
 TOKEN2NUM = {
@@ -162,34 +163,23 @@ def volp(notation_str):
     return "".join(["1-", *transformed])
 
 
-# s -> [(int, int), (int, int), (int, int), (int, int)]
-# 836,147 1247,147 1247,301 836,301
+# str -> [(int, int), (int, int), (int, int), (int, int)]
 def change_coords(coords_str):
     pairs = coords_str.split()
     coords = [tuple(int(x) for x in pair.split(",")) for pair in pairs]
     (x1, y1) = coords[0]
     (x2, y2) = coords[2]
-    left = x1
-    top = y1
-    width = x2 - x1
-    height = y2 - y1
-    return [left, top, width, height]
-
-def maketype(custom): 
-    # "readingOrder {index:0;} structure {score:0.94; type:rubrik2;}" ==> rubrik2
-    type = re.search(r"type:([^;]+);", custom).group(1)
-    return type
+    return [x1, y1, x2 - x1, y2 - y1]
 
 def cleaned_rubrik_text(text): #rubrik 2 text bereinigen
-    text = " <br> ".join(text)
-    return text
-
+    text = re.sub(r"\s+", " ", "".join(text).replace("\n", "<br>")).strip().lstrip('<br>')
+    return str(text)
 
 def cleaned_text(text): # text bereinigen
-    text = "".join(text)
-    return text
+    text = re.sub(r"\s+", " ", "".join(text).replace("\n", "")).strip()
+    return str(text)
 
-# dic of region ->  
+# dic -> dic
 def process_regions(data):
     if data["type"] == "notation": 
         data["text"] = volp(cleaned_text(data["text"]))
@@ -200,14 +190,14 @@ def process_regions(data):
         return data
     return data
 
+#regions = {region_id: {"type": type, "text": text, "coords": coords}}
 def get_regions(tree):
     regions = {}
-    for region in tree.xpath("//p:TextRegion", namespaces=NS_MAP): 
-        region_id = region.get("id")
-        type = maketype(region.get("custom"))
-        text = region.xpath("./p:TextLine/p:TextEquiv/p:Unicode/text()", namespaces=NS_MAP)
-        coords = region.find("./p:Coords", namespaces=NS_MAP).get("points")
-        #regions = {region_id: {"type": type, "text": text, "coords": coords}}
+    for region in tree.xpath("//p:zone[@rendition='TextRegion']", namespaces=NS_MAP):
+        region_id = region.get("{http://www.w3.org/XML/1998/namespace}id")
+        type = region.get("subtype") #kein maketype() mehr notwendig
+        coords = region.get("points")
+        text = tree.xpath(f"//p:ab[@facs='#{region_id}']/text()", namespaces=NS_MAP)
         regions[region_id] = {"type": type, "text": text, "coords": coords}
         regions[region_id] = process_regions(regions[region_id])
     return regions
@@ -222,28 +212,28 @@ def create_html_output(tree):
     <style>
 .volpiano {
   font-family: Volpiano;
-  font-size: 4rem;
+  font-size: 5rem;
 }
 
 .container-grid {
     display: grid;                     
-    grid-template-columns: auto 1fr;  
+    grid-template-columns: 1fr 1fr;  
     gap: 20px;                        
     height: 100vh;                    
 }
 
 .image-section-grid {
     position: sticky;  
-    top: 0;           
-    height: 100vh;
+    top: 0;          
     overflow: hidden;
     position: relative; 
+    overflow-y: auto;
 }
 
 .text-section-grid {
     overflow-y: auto;  
     padding: 20px;
-    font-size: 3em;
+    font-size: 4em;
 }
 
 p {
@@ -257,31 +247,30 @@ h1 {
 }
 
 p.highlight {
-  border: 5px solid black;
+  border: 3px solid black;
   padding: 3px;
 }
 
 .image-region {
   position: absolute;
-  border: 5px solid transparent;
+  border: 3px solid transparent;
   pointer-events: auto;
   z-index: 10;
 }
 
 .image-region.highlight {
-  border: 5px solid black;
+  border: 3px solid black;
 }
 """ 
     html += """</style>
   </head>
   <body>
-    <h1>Name der Datei bzw. Seite: D-MbsClm2766_Seite_010</h1>
+    <h1>Name der Datei bzw. Seite</h1>
     <div class="container-grid">
         <div class="image-section-grid">
-            <img src="images/D-MbsClm2766_Seite_010.jpg">
+            <img src="images/A-Gu_A63_51-001r.jpg">
 """
     
-    # Add image regions based on the coordinates from your data
     for region_id, data in regions.items():
         coords = change_coords(data["coords"])
         html += f"""<div class="image-region" id="region-{region_id}" data-target="paragraph-{region_id}" 
@@ -294,7 +283,7 @@ p.highlight {
 """
     for region_id, data in regions.items(): 
         text = data["text"]
-        # Add id and data-target to ALL paragraph types
+
         if data["type"] == "notation":
             html += f"""<p id="paragraph-{region_id}" data-target="region-{region_id}" data-region="{region_id}" class="volpiano">{text}</p>"""
         elif data["type"] == "rubrik2": 
