@@ -7,7 +7,6 @@ P_NS = "http://www.tei-c.org/ns/1.0"
 NS_MAP = {"p": P_NS}
 
 INFILE = "A-Gf_A63_51_Graduale_1517.xml"
-#OUTFILE = "D-MbsClm2766_Seite_010.json"
 
 VOLP2NUM = {
     "a": 0,
@@ -106,6 +105,8 @@ def token2volp(clef, token_str):
         return "-"
     elif token_str == "L":
         return "-3-"
+    elif token_str == "LL": 
+        return "-33-"
     elif token_str.startswith(
         "cu_"
     ):  # Kustos, in Transkribus: "cu_z2" => 'kleine Note' in Volpiano Großbuchstaben, davor 2 Abstände (lt. RK) (volp: "--A")
@@ -171,11 +172,13 @@ def change_coords(coords_str):
     (x2, y2) = coords[2]
     return [x1, y1, x2 - x1, y2 - y1]
 
-def cleaned_rubrik_text(text): #rubrik 2 text bereinigen
+# clean rubrik2 text 
+def cleaned_rubrik_text(text):
     text = re.sub(r"\s+", " ", "".join(text).replace("\n", "<br>")).strip().lstrip('<br>')
     return str(text)
 
-def cleaned_text(text): # text bereinigen
+# clean text
+def cleaned_text(text): 
     text = re.sub(r"\s+", " ", "".join(text).replace("\n", "")).strip()
     return str(text)
 
@@ -195,7 +198,7 @@ def get_regions(tree):
     regions = {}
     for region in tree.xpath("//p:zone[@rendition='TextRegion']", namespaces=NS_MAP):
         region_id = region.get("{http://www.w3.org/XML/1998/namespace}id")
-        type = region.get("subtype") #kein maketype() mehr notwendig
+        type = region.get("subtype")
         coords = region.get("points")
         text = tree.xpath(f"//p:ab[@facs='#{region_id}']/text()", namespaces=NS_MAP)
         regions[region_id] = {"type": type, "text": text, "coords": coords}
