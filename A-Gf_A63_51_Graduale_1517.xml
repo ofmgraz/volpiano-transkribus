@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="UTF-8"?><TEI xmlns="http://www.tei-c.org/ns/1.0">
+   <teiHeader>
+      <fileDesc>
+         <titleStmt><title type="main">A-Gf_A63_51_Graduale_1517</title></titleStmt>
+         <seriesStmt><title>OFM_Graz_Choralhandschriften</title></seriesStmt>
+         <sourceDesc>
+            <bibl><title type="main">A-Gf_A63_51_Graduale_1517</title><idno type="Transkribus">1493184</idno><idno type="external">NA</idno></bibl>
+         </sourceDesc>
+      </fileDesc>
+      <profileDesc>
+      </profileDesc>
+   </teiHeader>
+   <facsimile>
+      <surface lrx="3768" lry="5517" ulx="0" uly="0" xml:id="facs_3">
+         <graphic height="5517px" url="57166425_3_A-Gu_A63_51-001r.jpg" width="3768px"/>
+         
+         <zone points="569,490 2879,490 2879,1007 569,1007" rendition="TextRegion" xml:id="facs_3_rA9gc_12" subtype="rubrik2">
+            <zone points="711,558 2793,558 2793,628 711,628" rendition="Line" xml:id="facs_3_line_1691584172506_44"/>
+            <zone points="683,646 2762,646 2762,708 683,708" rendition="Line" xml:id="facs_3_line_1691584175671_49"/>
+            <zone points="691,725 2789,725 2789,775 691,775" rendition="Line" xml:id="facs_3_line_1691584181378_54"/>
+            <zone points="699,785 2785,785 2785,855 699,855" rendition="Line" xml:id="facs_3_line_1691584185236_59"/>
+            <zone points="667,861 2765,861 2765,915 667,915" rendition="Line" xml:id="facs_3_line_1691584196424_64"/>
+            <zone points="655,936 2793,936 2793,990 655,990" rendition="Line" xml:id="facs_3_line_1691584201000_69"/>
+         </zone>
+         <zone points="210,980 1030,980 1030,1993 210,1993" rendition="TextRegion" xml:id="facs_3_ro3JE_2" subtype="initiale_fleuro_lombarde">
+            <zone points="466,1025 1005,1025 1005,1941 466,1941" rendition="Line" xml:id="facs_3_line_1695810915635_104"/>
+         </zone>
+         <zone points="995,985 2875,985 2875,1345 995,1345" rendition="TextRegion" xml:id="facs_3_r40Fr_9" subtype="notation">
+            <zone points="1024,1008 2863,1008 2863,1340 1024,1340" rendition="Line" xml:id="facs_3_line_1695810892218_97"/>
+         </zone>
+         <zone points="1020,1339 2816,1339 2816,1476 1020,1476" rendition="TextRegion" xml:id="facs_3_r9G1K_18" subtype="text">
+            <zone points="1105,1386 2751,1386 2751,1456 1105,1456" rendition="Line" xml:id="facs_3_line_1691584206381_74"/>
+         </zone>
+         <zone points="995,1476 2870,1476 2870,1767 995,1767" rendition="TextRegion" xml:id="facs_3_rPMpj_8" subtype="notation">
+            <zone points="1023,1489 2858,1489 2858,1764 1023,1764" rendition="Line" xml:id="facs_3_line_1695812011182_156"/>
+         </zone>
+         <zone points="1000,1756 2850,1756 2850,1934 1000,1934" rendition="TextRegion" xml:id="facs_3_rTLiy_17" subtype="text">
+            <zone points="1045,1856 2769,1856 2769,1918 1045,1918" rendition="Line" xml:id="facs_3_line_1691584210668_79"/>
+         </zone>
+         <zone points="294,1896 2879,1896 2879,2235 294,2235" rendition="TextRegion" xml:id="facs_3_ru0uG_7" subtype="notation">
+            <zone points="312,1912 2841,1912 2841,2222 312,2222" rendition="Line" xml:id="facs_3_line_1695814860425_173"/>
+         </zone>
+         <zone points="363,2219 2806,2219 2806,2386 363,2386" rendition="TextRegion" xml:id="facs_3_rNLUC_16" subtype="text">
+            <zone points="428,2322 2738,2322 2738,2384 428,2384" rendition="Line" xml:id="facs_3_line_1691584214652_84"/>
+         </zone>
+         <zone points="299,2381 780,2381 780,2877 299,2877" rendition="TextRegion" xml:id="facs_3_r8bMb_3" subtype="initiale_cadelle">
+            <zone points="337,2452 706,2452 706,2825 337,2825" rendition="Line" xml:id="facs_3_line_1715755796953_46"/>
+         </zone>
+         <zone points="681,2392 2884,2392 2884,2699 681,2699" rendition="TextRegion" xml:id="facs_3_rfUMA_6" subtype="notation">
+            <zone points="724,2400 2854,2400 2854,2689 724,2689" rendition="Line" xml:id="facs_3_line_1695815141103_186"/>
+         </zone>
+         <zone points="740,2688 2678,2688 2678,2855 740,2855" rendition="TextRegion" xml:id="facs_3_rPUO2_15" subtype="text">
+            <zone points="771,2788 2626,2788 2626,2846 771,2846" rendition="Line" xml:id="facs_3_line_1691584221365_89"/>
+         </zone>
+         <zone points="2686,2706 2871,2706 2871,2867 2686,2867" rendition="TextRegion" xml:id="facs_3_region_1688574047239_59" subtype="rubrik">
+            <zone points="2698,2800 2848,2800 2848,2850 2698,2850" rendition="Line" xml:id="facs_3_line_1691902720687_35"/>
+         </zone>
+         <zone points="279,2839 2879,2839 2879,3141 279,3141" rendition="TextRegion" xml:id="facs_3_rRihV_5" subtype="notation">
+            <zone points="301,2873 2864,2873 2864,3134 301,3134" rendition="Line" xml:id="facs_3_line_1695820189246_196"/>
+         </zone>
+         <zone points="377,3151 2600,3151 2600,3360 377,3360" rendition="TextRegion" xml:id="facs_3_rNKBk_14" subtype="text">
+            <zone points="443,3234 2550,3234 2550,3308 443,3308" rendition="Line" xml:id="facs_3_line_1691584236310_101"/>
+         </zone>
+         <zone points="2601,3163 2783,3163 2783,3300 2601,3300" rendition="TextRegion" xml:id="facs_3_region_1688574055589_62" subtype="rubrik">
+            <zone points="2608,3244 2764,3244 2764,3296 2608,3296" rendition="Line" xml:id="facs_3_line_1691902737146_45"/>
+         </zone>
+         <zone points="251,3309 695,3309 695,3788 251,3788" rendition="TextRegion" xml:id="facs_3_region_1688573975378_49" subtype="initiale_cadelle">
+         </zone>
+         <zone points="698,3350 1582,3350 1582,3612 698,3612" rendition="TextRegion" xml:id="facs_3_region_1688573962073_45" subtype="notation">
+            <zone points="712,3355 1577,3355 1577,3612 712,3612" rendition="Line" xml:id="facs_3_line_1695820417129_213"/>
+         </zone>
+         <zone points="657,3598 1570,3598 1570,3771 657,3771" rendition="TextRegion" xml:id="facs_3_rCmUx_13" subtype="text">
+            <zone points="731,3692 1551,3692 1551,3746 731,3746" rendition="Line" xml:id="facs_3_line_1691584249940_106"/>
+         </zone>
+         <zone points="245,3302 2889,3302 2889,4320 245,4320" rendition="TextRegion" xml:id="facs_3_r0Jcl_11" subtype="rubrik2">
+            <zone points="1623,3329 2829,3329 2829,3379 1623,3379" rendition="Line" xml:id="facs_3_line_1691584253915_111"/>
+            <zone points="1611,3389 2833,3389 2833,3443 1611,3443" rendition="Line" xml:id="facs_3_line_1691584258031_116"/>
+            <zone points="1606,3458 2822,3458 2822,3527 1606,3527" rendition="Line" xml:id="facs_3_line_1691584262036_121"/>
+            <zone points="1615,3552 2793,3552 2793,3610 1615,3610" rendition="Line" xml:id="facs_3_line_1691584267562_126"/>
+            <zone points="1603,3616 2813,3616 2813,3674 1603,3674" rendition="Line" xml:id="facs_3_line_1691584272399_131"/>
+            <zone points="1619,3698 2804,3698 2804,3750 1619,3750" rendition="Line" xml:id="facs_3_line_1691584275681_136"/>
+            <zone points="452,3787 2817,3787 2817,3857 452,3857" rendition="Line" xml:id="facs_3_line_1691584280159_141"/>
+            <zone points="443,3859 2821,3859 2821,3941 443,3941" rendition="Line" xml:id="facs_3_line_1691584284549_146"/>
+            <zone points="451,3923 2801,3923 2801,4004 451,4004" rendition="Line" xml:id="facs_3_line_1691584290070_151"/>
+            <zone points="453,4026 2842,4026 2842,4080 453,4080" rendition="Line" xml:id="facs_3_line_1691585052462_206"/>
+            <zone points="384,4154 2756,4154 2756,4218 384,4218" rendition="Line" xml:id="facs_3_line_1691585055801_211"/>
+         </zone>
+      </surface>
+   </facsimile>
+   <text>
+      <body>
+         <div>
+            <pb facs="#facs_3" n="3" xml:id="img_0003"/>
+            <ab facs="#facs_3_rA9gc_12" type="rubrik2">
+               <lb facs="#facs_3_line_1691584172506_44" n="N001"/>In omnibus dominicis per annum Finita terica a sacer
+               <lb facs="#facs_3_line_1691584175671_49" n="N002"/>dote celebraturo missam aspergatur aqua benedicta
+               <lb facs="#facs_3_line_1691584181378_54" n="N003"/>altare maius tantum genibus coram altari flexis et statim
+               <lb facs="#facs_3_line_1691584185236_59" n="N004"/>a cantore incipiatur An. Asperges me domine. Ps. Miserere mei
+               <lb facs="#facs_3_line_1691584196424_64" n="N005"/>deus V. Gloria patri sicut erat etc. et repetitur An Asper 
+               <lb facs="#facs_3_line_1691584201000_69" n="N006"/>ges me domine etc. et a sacerdote asperguntur fraters: An.
+            </ab>
+            <ab facs="#facs_3_ro3JE_2" type="initiale_fleuro_lombarde">
+               <lb facs="#facs_3_line_1695810915635_104" n="N001"/>A
+            </ab>
+            <ab facs="#facs_3_r40Fr_9" type="notation">
+               <lb facs="#facs_3_line_1695810892218_97" n="N001"/>c2 z-1 l1 , l2 z1 l1 , z1 l2 ,  z2 LL l3 z3 l4 , l4 z3 , l3 z2 , l3 , z2 cu_z1
+            </ab>
+            <ab facs="#facs_3_r9G1K_18" type="text">
+               <lb facs="#facs_3_line_1691584206381_74" n="N001"/>sperges me domine yso
+            </ab>
+            <ab facs="#facs_3_rPMpj_8" type="notation">
+               <lb facs="#facs_3_line_1695812011182_156" n="N001"/>c3 z2 l3 , z3 l3 z2 l2 , z2 , z1 l2 z1 , z1 , z1 l2 , l3 z2 l2 , z2 l3 cu_z3
+            </ab>
+            <ab facs="#facs_3_rTLiy_17" type="text">
+               <lb facs="#facs_3_line_1691584210668_79" n="N001"/>po et mundabor lauabis
+            </ab>
+            <ab facs="#facs_3_ru0uG_7" type="notation">
+               <lb facs="#facs_3_line_1695814860425_173" n="N001"/>c3 z3 , z3 l4 z4 l4 z3 , l3 z2 , l2 , l3 , z2 l3 , z3 l3 z2 l2 , z2 , z1 l2 z1 , z1 cu_z1 
+            </ab>
+            <ab facs="#facs_3_rNLUC_16" type="text">
+               <lb facs="#facs_3_line_1691584214652_84" n="N001"/>me et super niuem dealbabor
+            </ab>
+            <ab facs="#facs_3_r8bMb_3" type="initiale_cadelle">
+            </ab>
+            <ab facs="#facs_3_rfUMA_6" type="notation">
+               <lb facs="#facs_3_line_1695815141103_186" n="N001"/>c3 z1 l3 z2 , l3 z3 , z3 , z3 , z3 z4 , l4 , l4 z3 , z3 l4 , z3 z2 , l3 z3 , z3 cu_z3
+            </ab>
+            <ab facs="#facs_3_rPUO2_15" type="text">
+               <lb facs="#facs_3_line_1691584221365_89" n="N001"/>Iiserere mei deus secundum
+            </ab>
+            <ab facs="#facs_3_region_1688574047239_59" type="rubrik">
+               <lb facs="#facs_3_line_1691902720687_35" n="N001"/>Ps.
+            </ab>
+            <ab facs="#facs_3_rRihV_5" type="notation">
+               <lb facs="#facs_3_line_1695820189246_196" n="N001"/>c3 z3 , z3 , z3 , z3 , z3 , z3 l4 , z4 l4 , z3 , l3 , l3 z2 , l2 z1 cu_z1
+            </ab>
+            <ab facs="#facs_3_rNKBk_14" type="text">
+               <lb facs="#facs_3_line_1691584236310_101" n="N001"/>magnam misericordiam tuam.
+            </ab>
+            <ab facs="#facs_3_region_1688574055589_62" type="rubrik">
+               <lb facs="#facs_3_line_1691902737146_45" n="N001"/>V.
+            </ab>
+            <ab facs="#facs_3_region_1688573962073_45" type="notation">
+               <lb facs="#facs_3_line_1695820417129_213" n="N001"/>c3 z1 l3 z2 , l3 z3 , z3 , z3 , z3
+            </ab>
+            <ab facs="#facs_3_rCmUx_13" type="text">
+               <lb facs="#facs_3_line_1691584249940_106" n="N001"/>Gloria patri
+            </ab>
+            <ab facs="#facs_3_r0Jcl_11" type="rubrik2">
+               <lb facs="#facs_3_line_1691584253915_111" n="N001"/>Superdicta An. predicto dicatur in asper
+               <lb facs="#facs_3_line_1691584258031_116" n="N002"/>sione aque benedicte in dominicis
+               <lb facs="#facs_3_line_1691584262036_121" n="N003"/>per totum annum excepto quis in domini-
+               <lb facs="#facs_3_line_1691584267562_126" n="N004"/>ca de passione et dominica palma-
+               <lb facs="#facs_3_line_1691584272399_131" n="N005"/>rum non dicitur Gloria patri. sed
+               <lb facs="#facs_3_line_1691584275681_136" n="N006"/>post uersum Miserere repetatur in-
+               <lb facs="#facs_3_line_1691584280159_141" n="N007"/>mediate An. Asperges me. excepto tempore pascali scilicet ad do-
+               <lb facs="#facs_3_line_1691584284549_146" n="N008"/>minica pasce usque ad penthecosten. quo tempore cantatur communiter
+               <lb facs="#facs_3_line_1691584290070_151" n="N009"/>An. Vidi aquam egredientem etc. Ps. Confitemini domino V. Gloria patri.
+               <lb facs="#facs_3_line_1691585052462_206" n="N010"/>Sicut erat etc. Repetatur An. Vidi aquam egredientem de templo:
+               <lb facs="#facs_3_line_1691585055801_211" n="N011"/>Sequitur Antiphona : 717 :
+            </ab>
+         </div>
+      </body>
+   </text>
+</TEI>
